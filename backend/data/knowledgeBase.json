@@ -1,0 +1,92 @@
+[
+  {
+    "id": "montessori-1",
+    "category": "Montessori Activities",
+    "ageGroup": "3-5",
+    "skill": "Fine Motor Skills",
+    "difficulty": "easy",
+    "activityType": "hands-on",
+    "text": "Pouring and transferring: Give the child two small containers and dried beans or rice. Have them practice pouring the beans from one container to the other using a small scoop or their hands. This builds hand-eye coordination, concentration, and prepares fine motor muscles for writing."
+  },
+  {
+    "id": "milestone-1",
+    "category": "Child Development Milestones",
+    "ageGroup": "4-6",
+    "skill": "Cognitive Development",
+    "difficulty": "medium",
+    "activityType": "reference",
+    "text": "Between ages 4 and 6, children typically develop the ability to count to 20, sort objects by size and color, follow multi-step instructions, and begin to understand the concept of time (yesterday, today, tomorrow)."
+  },
+  {
+    "id": "learning-activity-1",
+    "category": "Learning Activities",
+    "ageGroup": "5-7",
+    "skill": "Space & Science Curiosity",
+    "difficulty": "easy",
+    "activityType": "craft",
+    "text": "Build a paper plate solar system: Cut circles of different sizes from colored paper to represent the planets, glue them onto a paper plate in order from the sun, and label each one. Great for space-loving kids to learn planet order and sizes while practicing cutting and gluing."
+  },
+  {
+    "id": "social-skills-1",
+    "category": "Social Skills Development",
+    "ageGroup": "3-6",
+    "skill": "Sharing & Empathy",
+    "difficulty": "easy",
+    "activityType": "role-play",
+    "text": "Feelings charades: Take turns acting out an emotion (happy, sad, surprised, worried) without words while others guess. This helps children recognize emotional expressions in themselves and others, building empathy and social awareness."
+  },
+  {
+    "id": "emotional-development-1",
+    "category": "Emotional Development",
+    "ageGroup": "4-8",
+    "skill": "Self-Regulation",
+    "difficulty": "medium",
+    "activityType": "mindfulness",
+    "text": "Balloon breathing: Have the child place hands on their belly and imagine it is a balloon. Breathe in slowly through the nose to 'inflate' the balloon, then breathe out slowly through the mouth to 'deflate' it. Practicing this for one minute helps children calm down during moments of frustration."
+  },
+  {
+    "id": "safety-1",
+    "category": "Safety Guidelines",
+    "ageGroup": "3-10",
+    "skill": "Activity Safety",
+    "difficulty": "easy",
+    "activityType": "reference",
+    "text": "Always supervise children directly during activities involving small objects (choking hazard for under 3s), scissors, glue guns, or cooking. Keep art supplies non-toxic and washable. Review safety notes before starting any craft or science activity."
+  },
+  {
+    "id": "educational-game-1",
+    "category": "Educational Games",
+    "ageGroup": "5-8",
+    "skill": "Math & Counting",
+    "difficulty": "medium",
+    "activityType": "game",
+    "text": "Number scavenger hunt: Hide number cards around the room or yard. Call out a number and have the child find it, then have them find that many objects (leaves, toys, blocks) to match. Builds number recognition and counting skills through movement."
+  },
+  {
+    "id": "stem-1",
+    "category": "STEM Activities",
+    "ageGroup": "6-9",
+    "skill": "Fine Motor Skills & Engineering",
+    "difficulty": "medium",
+    "activityType": "experiment",
+    "text": "Toothpick and marshmallow structures: Using mini marshmallows and toothpicks, challenge the child to build the tallest tower or a simple bridge. This teaches basic engineering concepts like stability and balance while strengthening fine motor precision."
+  },
+  {
+    "id": "montessori-2",
+    "category": "Montessori Activities",
+    "ageGroup": "2-4",
+    "skill": "Fine Motor Skills",
+    "difficulty": "easy",
+    "activityType": "hands-on",
+    "text": "Clothespin clipping: Provide colorful clothespins and a cardboard circle or box edge. Have the child practice squeezing and clipping the clothespins around the edge. This directly strengthens the pincer grip needed for holding a pencil."
+  },
+  {
+    "id": "learning-activity-2",
+    "category": "Learning Activities",
+    "ageGroup": "4-7",
+    "skill": "Dinosaurs & Reading",
+    "difficulty": "easy",
+    "activityType": "craft",
+    "text": "Dinosaur fossil dig: Freeze small plastic dinosaur toys in a container of water overnight. Give the child a small spoon and let them 'excavate' the dinosaurs by chipping away at the ice, then look up facts about each dinosaur they free."
+  }
+]
