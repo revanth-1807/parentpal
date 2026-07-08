@@ -6,6 +6,8 @@ const storyHistorySchema = new mongoose.Schema(
     storyTitle: { type: String, required: true },
     storyContent: { type: String, required: true },
     favorite: { type: Boolean, default: false },
+    completed: { type: Boolean, default: false },
+    completedAt: { type: Date, default: null },
     createdAt: { type: Date, default: Date.now },
   },
   { timestamps: true }

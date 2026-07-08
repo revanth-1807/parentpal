@@ -39,6 +39,7 @@ The child, ${child.childName}, should be the main character/hero of the story.
       childId: child._id,
       storyTitle: storyData.title,
       storyContent: storyData.content,
+      completed: false,
     });
 
     const storyCount = await StoryHistory.countDocuments({ childId: child._id });
@@ -80,4 +81,23 @@ const toggleFavorite = async (req, res, next) => {
   }
 };
 
-module.exports = { generateStory, getStoryHistory, toggleFavorite };
+// @route PUT /api/story/:storyId/complete
+const markStoryComplete = async (req, res, next) => {
+  try {
+    const story = await StoryHistory.findById(req.params.storyId);
+    if (!story) return res.status(404).json({ message: "Story not found" });
+    if (story.childId.toString() !== req.child._id.toString()) {
+      return res.status(403).json({ message: "Not authorized for this story" });
+    }
+
+    story.completed = true;
+    story.completedAt = new Date();
+    await story.save();
+
+    res.json({ story });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { generateStory, getStoryHistory, toggleFavorite, markStoryComplete };

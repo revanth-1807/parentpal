@@ -1,10 +1,31 @@
-import React from "react";
-import { FaUserCircle, FaLink } from "react-icons/fa";
+import React, { useEffect, useState } from "react";
+import { FaUserCircle, FaLink, FaShieldAlt } from "react-icons/fa";
 import { SectionCard } from "../components/Card.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 
 const Settings = () => {
   const { parent } = useAuth();
+  const [pin, setPin] = useState("");
+  const [confirmPin, setConfirmPin] = useState("");
+  const [status, setStatus] = useState("");
+
+  useEffect(() => {
+    setPin(localStorage.getItem("parentpal_child_mode_pin") || "");
+  }, []);
+
+  const savePin = (e) => {
+    e.preventDefault();
+    if (!pin.trim()) {
+      setStatus("Enter a PIN to protect Child Mode.");
+      return;
+    }
+    if (pin.trim() !== confirmPin.trim()) {
+      setStatus("PIN and confirmation must match.");
+      return;
+    }
+    localStorage.setItem("parentpal_child_mode_pin", pin.trim());
+    setStatus("Child Mode PIN saved on this device.");
+  };
 
   return (
     <div className="space-y-8">
@@ -29,8 +50,41 @@ const Settings = () => {
           <code className="text-sm text-slate-600">{window.location.origin}/child</code>
         </div>
         <p className="text-xs text-slate-400 mt-2">
-          Child Mode does not require login and only shows safe, kid-friendly AI companions.
+          Child Mode uses a parent PIN on this device to unlock fullscreen access.
         </p>
+      </SectionCard>
+
+      <SectionCard title="Child Mode PIN" subtitle="Set the PIN that unlocks fullscreen Child Mode on this device">
+        <form onSubmit={savePin} className="space-y-4 max-w-md">
+          <div>
+            <label className="text-xs font-semibold text-slate-500 mb-1 block flex items-center gap-2">
+              <FaShieldAlt /> New PIN
+            </label>
+            <input
+              type="password"
+              inputMode="numeric"
+              className="input-field"
+              placeholder="Enter a PIN"
+              value={pin}
+              onChange={(e) => setPin(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="text-xs font-semibold text-slate-500 mb-1 block">Confirm PIN</label>
+            <input
+              type="password"
+              inputMode="numeric"
+              className="input-field"
+              placeholder="Re-enter the PIN"
+              value={confirmPin}
+              onChange={(e) => setConfirmPin(e.target.value)}
+            />
+          </div>
+          {status && <div className="text-sm rounded-xl px-3 py-2 bg-slate-50 text-slate-600">{status}</div>}
+          <button type="submit" className="btn-primary">
+            Save PIN
+          </button>
+        </form>
       </SectionCard>
     </div>
   );

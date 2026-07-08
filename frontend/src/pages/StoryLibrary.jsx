@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaMagic, FaSearch, FaHeart, FaRegHeart, FaBookOpen } from "react-icons/fa";
+import { FaMagic } from "react-icons/fa";
 import { SectionCard } from "../components/Card.jsx";
 import ChildSelector from "../components/ChildSelector.jsx";
 import { useChildren } from "../hooks/useChildren.js";
@@ -10,41 +10,43 @@ const StoryLibrary = () => {
   const [favoriteCharacter, setFavoriteCharacter] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [stories, setStories] = useState([]);
-  const [search, setSearch] = useState("");
-  const [activeStory, setActiveStory] = useState(null);
+  const [created, setCreated] = useState(false);
+  const cacheKey = selectedChildId ? `parentpal_story_cache_${selectedChildId}` : "";
 
   useEffect(() => {
-    if (selectedChildId) fetchStories();
+    if (selectedChild) {
+      setFavoriteCharacter("");
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedChildId, search]);
+  }, [selectedChildId]);
 
-  const fetchStories = async () => {
-    const { data } = await api.get("/story/history", { params: { childId: selectedChildId, search } });
-    setStories(data.stories);
+  const syncStoryCache = async () => {
+    if (!selectedChildId) return;
+    try {
+      const { data } = await api.get("/story/history", { params: { childId: selectedChildId } });
+      localStorage.setItem(cacheKey, JSON.stringify(data.stories || []));
+    } catch {
+      const cached = localStorage.getItem(cacheKey);
+      if (!cached) return;
+    }
   };
 
   const handleGenerate = async () => {
     setError("");
     setLoading(true);
+    setCreated(false);
     try {
-      const { data } = await api.post("/story/generate", {
+      await api.post("/story/generate", {
         childId: selectedChildId,
         favoriteCharacter,
       });
-      setActiveStory(data.story);
-      fetchStories();
+      setCreated(true);
+      await syncStoryCache();
     } catch (err) {
       setError(err.response?.data?.message || "Couldn't generate a story right now. Please try again.");
     } finally {
       setLoading(false);
     }
-  };
-
-  const toggleFavorite = async (id) => {
-    await api.put(`/story/${id}/favorite`);
-    fetchStories();
-    if (activeStory?._id === id) setActiveStory({ ...activeStory, favorite: !activeStory.favorite });
   };
 
   return (
@@ -71,50 +73,19 @@ const StoryLibrary = () => {
               <button onClick={handleGenerate} disabled={loading} className="btn-primary w-full justify-center">
                 <FaMagic /> {loading ? "Writing story..." : "Generate Story"}
               </button>
+              <p className="text-xs text-slate-400">
+                The story will appear in the child view. The parent dashboard is used to mark it complete.
+              </p>
             </div>
           </SectionCard>
 
           <div className="lg:col-span-2 space-y-6">
-            {activeStory && (
+            {created && (
               <SectionCard>
-                <div className="flex items-start justify-between mb-3">
-                  <h3 className="text-xl font-display font-bold">{activeStory.storyTitle}</h3>
-                  <button onClick={() => toggleFavorite(activeStory._id)} className="text-brand-purple text-xl">
-                    {activeStory.favorite ? <FaHeart /> : <FaRegHeart />}
-                  </button>
-                </div>
-                <p className="text-slate-600 whitespace-pre-line leading-relaxed">{activeStory.storyContent}</p>
+                <p className="text-sm uppercase tracking-wide text-brand-purple font-semibold mb-2">Shared to Child</p>
+                <p className="text-slate-600">The story is now available in the child page and the parent review queue.</p>
               </SectionCard>
             )}
-
-            <SectionCard title="Story Library" subtitle={`${stories.length} stories saved`}>
-              <div className="relative mb-4">
-                <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm" />
-                <input
-                  className="input-field pl-11 !py-2"
-                  placeholder="Search stories..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-              </div>
-              <div className="grid sm:grid-cols-2 gap-3">
-                {stories.map((s) => (
-                  <button
-                    key={s._id}
-                    onClick={() => setActiveStory(s)}
-                    className="text-left border border-slate-100 rounded-2xl p-4 hover:border-brand-purple transition"
-                  >
-                    <div className="flex items-center justify-between mb-1">
-                      <FaBookOpen className="text-brand-purple" />
-                      {s.favorite && <FaHeart className="text-pink-400 text-sm" />}
-                    </div>
-                    <p className="font-semibold text-sm">{s.storyTitle}</p>
-                    <p className="text-xs text-slate-400">{new Date(s.createdAt).toLocaleDateString()}</p>
-                  </button>
-                ))}
-                {stories.length === 0 && <p className="text-sm text-slate-400 col-span-2">No stories yet.</p>}
-              </div>
-            </SectionCard>
           </div>
         </div>
       ) : (

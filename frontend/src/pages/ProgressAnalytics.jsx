@@ -24,11 +24,13 @@ const ProgressAnalytics = () => {
   const [insight, setInsight] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [badges, setBadges] = useState([]);
 
   useEffect(() => {
     if (!selectedChildId) return;
     api.get("/insights/summary", { params: { childId: selectedChildId, range: "weekly" } }).then(({ data }) => setWeekly(data));
     api.get("/insights/summary", { params: { childId: selectedChildId, range: "monthly" } }).then(({ data }) => setMonthly(data));
+    api.get("/insights/badges", { params: { childId: selectedChildId } }).then(({ data }) => setBadges(data.badges || [])).catch(() => setBadges([]));
   }, [selectedChildId]);
 
   const chartData = weekly && monthly
@@ -132,10 +134,28 @@ const ProgressAnalytics = () => {
           </SectionCard>
 
           <SectionCard title="Badges & Achievements">
-            <div className="flex items-center gap-3 text-slate-400">
-              <FaTrophy className="text-2xl text-brand-yellow" />
-              <p className="text-sm">Badges are awarded automatically as your child completes activities and stories.</p>
-            </div>
+            {badges.length === 0 ? (
+              <div className="flex items-center gap-3 text-slate-400">
+                <FaTrophy className="text-2xl text-brand-yellow" />
+                <p className="text-sm">No badges yet. When your child completes activities or stories, achievements will appear here.</p>
+              </div>
+            ) : (
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {badges.map((badge) => (
+                  <div key={badge._id} className="rounded-2xl border border-slate-100 bg-slate-50 p-4 flex items-start gap-3">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-yellow to-orange-400 text-white flex items-center justify-center text-2xl shadow-lg">
+                      {badge.icon || "🏅"}
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-slate-800">{badge.badgeName}</h4>
+                      <p className="text-xs text-slate-500">
+                        Earned on {new Date(badge.earnedDate || badge.createdAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </SectionCard>
         </>
       ) : (

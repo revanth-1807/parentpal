@@ -1,6 +1,7 @@
 const { generateText } = require("../services/geminiService");
 const ActivityHistory = require("../models/ActivityHistory");
 const StoryHistory = require("../models/StoryHistory");
+const Badge = require("../models/Badge");
 
 const INSIGHT_SYSTEM_PROMPT = `You are ParentPal's child development analyst. Parents describe how their child did during
 an activity. Analyze the feedback supportively and constructively. Respond with STRICT JSON only, no markdown fences:
@@ -70,4 +71,15 @@ const getProgressSummary = async (req, res, next) => {
   }
 };
 
-module.exports = { analyzeFeedback, getProgressSummary };
+// @route GET /api/insights/badges
+const getBadges = async (req, res, next) => {
+  try {
+    const child = req.child;
+    const badges = await Badge.find({ childId: child._id }).sort({ earnedDate: -1, createdAt: -1 });
+    res.json({ badges });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { analyzeFeedback, getProgressSummary, getBadges };
