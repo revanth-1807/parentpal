@@ -27,7 +27,11 @@ const protect = async (req, res, next) => {
 const verifyChildOwnership = async (req, res, next) => {
   const Child = require("../models/Child");
   try {
-    const childId = req.params.id || req.params.childId || req.body.childId;
+    const childId =
+      req.params.id ||
+      req.params.childId ||
+      req.query.childId ||
+      req.body.childId;
     if (!childId) return res.status(400).json({ message: "childId is required" });
 
     const child = await Child.findById(childId);

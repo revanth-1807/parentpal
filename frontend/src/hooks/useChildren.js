@@ -24,8 +24,7 @@ export const useChildren = () => {
     } finally {
       setLoading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [selectedChildId]);
 
   const selectChild = (id) => {
     setSelectedChildId(id);
