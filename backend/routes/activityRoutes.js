@@ -12,6 +12,6 @@ router.use(protect);
 
 router.post("/generate", verifyChildOwnership, generateActivity);
 router.get("/history", verifyChildOwnership, getActivityHistory);
-router.put("/:activityId/complete", markActivityComplete);
+router.put("/:activityId/complete", verifyChildOwnership, markActivityComplete);
 
 module.exports = router;

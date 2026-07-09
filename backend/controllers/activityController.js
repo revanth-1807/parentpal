@@ -92,12 +92,16 @@ const markActivityComplete = async (req, res, next) => {
     const { activityId } = req.params;
     const { feedback } = req.body;
 
-    const activity = await ActivityHistory.findByIdAndUpdate(
-      activityId,
-      { completed: true, feedback: feedback || "" },
-      { new: true }
-    );
+    const activity = await ActivityHistory.findById(activityId);
     if (!activity) return res.status(404).json({ message: "Activity not found" });
+    if (activity.childId.toString() !== req.child._id.toString()) {
+      return res.status(403).json({ message: "Not authorized for this activity" });
+    }
+
+    activity.completed = true;
+    activity.completedAt = new Date();
+    activity.feedback = feedback || "";
+    await activity.save();
 
     // Simple gamification: award a badge every 10 completed activities
     const completedCount = await ActivityHistory.countDocuments({ childId: activity.childId, completed: true });

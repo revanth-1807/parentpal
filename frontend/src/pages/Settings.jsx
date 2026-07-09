@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaUserCircle, FaLink, FaShieldAlt } from "react-icons/fa";
+import { FaUserCircle, FaShieldAlt, FaExternalLinkAlt } from "react-icons/fa";
 import { SectionCard } from "../components/Card.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 
@@ -27,6 +27,10 @@ const Settings = () => {
     setStatus("Child Mode PIN saved on this device.");
   };
 
+  const openChildMode = () => {
+    window.open("/child", "_blank", "noopener,noreferrer");
+  };
+
   return (
     <div className="space-y-8">
       <div>
@@ -45,11 +49,10 @@ const Settings = () => {
       </SectionCard>
 
       <SectionCard title="Child Mode Access" subtitle="Share this link on your child's device">
-        <div className="flex items-center gap-3 bg-slate-50 rounded-xl px-4 py-3">
-          <FaLink className="text-slate-400" />
-          <code className="text-sm text-slate-600">{window.location.origin}/child</code>
-        </div>
-        <p className="text-xs text-slate-400 mt-2">
+        <button type="button" onClick={openChildMode} className="btn-secondary inline-flex items-center gap-2">
+          <FaExternalLinkAlt /> Open Child Mode
+        </button>
+        <p className="text-xs text-slate-400 mt-3">
           Child Mode uses a parent PIN on this device to unlock fullscreen access.
         </p>
       </SectionCard>

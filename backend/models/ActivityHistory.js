@@ -14,6 +14,7 @@ const activityHistorySchema = new mongoose.Schema(
       estimatedTime: String,
     },
     completed: { type: Boolean, default: false },
+    completedAt: { type: Date, default: null },
     feedback: { type: String, default: "" },
     date: { type: Date, default: Date.now },
   },
