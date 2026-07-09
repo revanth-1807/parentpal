@@ -9,23 +9,25 @@ positive, encouraging ending. Never include violence, scary content, or anything
 Respond with STRICT JSON only, no markdown fences: { "title": string, "content": string }`;
 
 // @route POST /api/story/generate
-// body: { childId, favoriteCharacter }
+// body: { childId, prompt, favoriteCharacter }
 const generateStory = async (req, res, next) => {
   try {
-    const { favoriteCharacter } = req.body;
+    const { prompt, favoriteCharacter } = req.body;
     const child = req.child;
+    const storyIdea = prompt || favoriteCharacter;
 
-    const prompt = `
+    const storyPrompt = `
 Write a short personalized story (roughly 300-500 words) for:
 - Child's name: ${child.childName}
 - Age: ${child.age}
 - Interests: ${child.interests.join(", ") || "general adventure"}
-- Favorite character/companion to include: ${favoriteCharacter || "a friendly talking animal"}
+- User's story idea: ${storyIdea || "No specific idea provided. Create a fresh story from the child's interests."}
 
 The child, ${child.childName}, should be the main character/hero of the story.
+If the user provided an idea, use it as inspiration and adapt the language, tone, and complexity to the child's age.
     `.trim();
 
-    const raw = await generateText(prompt, STORY_SYSTEM_PROMPT);
+    const raw = await generateText(storyPrompt, STORY_SYSTEM_PROMPT);
     const cleaned = raw.replace(/```json|```/g, "").trim();
 
     let storyData;

@@ -19,13 +19,16 @@ matching this exact shape:
 }`;
 
 // @route POST /api/activity/generate
-// body: { childId, age, interest, challenge }
+// body: { childId, age, prompt, interest, challenge }
 const generateActivity = async (req, res, next) => {
   try {
-    const { age, interest, challenge } = req.body;
+    const { age, prompt, interest, challenge } = req.body;
     const child = req.child;
+    const activityIdea = prompt || [interest, challenge].filter(Boolean).join(", ");
 
-    const searchQuery = `Age ${age || child.age} child interested in ${interest || child.interests.join(", ")} working on ${challenge || child.challenges.join(", ")}`;
+    const searchQuery = activityIdea
+      ? `Age ${age || child.age} child activity idea: ${activityIdea}`
+      : `Age ${age || child.age} child interests ${child.interests.join(", ")} challenges ${child.challenges.join(", ")}`;
 
     // 1-3: embed query, search Pinecone, retrieve top contexts
     let matches = [];
@@ -40,7 +43,7 @@ const generateActivity = async (req, res, next) => {
       .join("\n");
 
     // 4-5: send context + child profile to Gemini
-    const prompt = `
+    const activityPrompt = `
 Child profile:
 - Name: ${child.childName}
 - Age: ${age || child.age}
@@ -48,13 +51,16 @@ Child profile:
 - Learning style: ${child.learningStyle}
 - Challenge to address: ${challenge || child.challenges.join(", ")}
 
+User's activity idea:
+${activityIdea || "No specific idea provided. Create an activity based on the child profile."}
+
 Relevant educational references (use these as inspiration, not verbatim text):
 ${contextText || "No additional references available; rely on best practice child development knowledge."}
 
-Generate ONE personalized developmental activity as strict JSON per the required schema.
+Generate ONE personalized developmental activity as strict JSON per the required schema. If the user provided an idea, shape the activity around it. Always adapt the activity to the child's age and developmental stage.
     `.trim();
 
-    const raw = await generateText(prompt, ACTIVITY_SYSTEM_PROMPT);
+    const raw = await generateText(activityPrompt, ACTIVITY_SYSTEM_PROMPT);
     const cleaned = raw.replace(/```json|```/g, "").trim();
 
     let activity;

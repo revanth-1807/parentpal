@@ -7,7 +7,7 @@ import api from "../api/axios.js";
 
 const StoryLibrary = () => {
   const { children, selectedChild, selectedChildId, selectChild } = useChildren();
-  const [favoriteCharacter, setFavoriteCharacter] = useState("");
+  const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [created, setCreated] = useState(false);
@@ -15,7 +15,7 @@ const StoryLibrary = () => {
 
   useEffect(() => {
     if (selectedChild) {
-      setFavoriteCharacter("");
+      setPrompt("");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedChildId]);
@@ -38,7 +38,7 @@ const StoryLibrary = () => {
     try {
       await api.post("/story/generate", {
         childId: selectedChildId,
-        favoriteCharacter,
+        prompt,
       });
       setCreated(true);
       await syncStoryCache();
@@ -63,18 +63,18 @@ const StoryLibrary = () => {
         <div className="grid lg:grid-cols-3 gap-6">
           <SectionCard title="Generate a New Story" className="h-fit">
             <div className="space-y-4">
-              <input
-                className="input-field"
-                placeholder="Favorite character (optional)"
-                value={favoriteCharacter}
-                onChange={(e) => setFavoriteCharacter(e.target.value)}
+              <textarea
+                className="input-field min-h-32"
+                placeholder="Example: Write a story about my child finding a glowing map in the garden and learning how to work with a friend."
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
               />
               {error && <div className="bg-red-50 text-red-600 text-sm rounded-xl px-3 py-2">{error}</div>}
               <button onClick={handleGenerate} disabled={loading} className="btn-primary w-full justify-center">
                 <FaMagic /> {loading ? "Writing story..." : "Generate Story"}
               </button>
               <p className="text-xs text-slate-400">
-                The story will appear in the child view. The parent dashboard is used to mark it complete.
+                Describe the story idea in your own words. AI will make it age-appropriate for your child.
               </p>
             </div>
           </SectionCard>
